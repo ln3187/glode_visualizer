@@ -49,6 +49,7 @@ class Init_comp extends React.Component {
         let param_dic_tmp = this.state.time_parameter
         param_dic_tmp[type] = val
         const { param_dic, OptionDic } = await check_datetime_from_input(s3, param_dic_tmp)
+        console.log("handle",param_dic)
 
         this.setState({
             time_parameter: param_dic,
@@ -88,7 +89,6 @@ class Init_comp extends React.Component {
 
 
     async componentDidMount() {
-
         const { param_dic, OptionDic } = await init_datetime(s3)
         let viewerArray = []
         viewerIdArray.forEach(viewerId => {
@@ -112,6 +112,23 @@ class Init_comp extends React.Component {
             })
             viewerArray.push(viewer);
         })
+
+        viewerArray[0].camera.changed.addEventListener(() => {
+            for (let i = 1; i < viewerIdArray.length; i++) {
+                viewerArray[i].camera.position = viewerArray[0].camera.position;
+                viewerArray[i].camera.direction = viewerArray[0].camera.direction;
+                viewerArray[i].camera.up = viewerArray[0].camera.up;
+                viewerArray[i].camera.right = viewerArray[0].camera.right;
+            };
+        });
+        for (let i = 1; i < viewerIdArray.length; i++) {
+            viewerArray[i].camera.changed.addEventListener(() => {
+                viewerArray[0].camera.position = viewerArray[i].camera.position;
+                viewerArray[0].camera.direction = viewerArray[i].camera.direction;
+                viewerArray[0].camera.up = viewerArray[i].camera.up;
+                viewerArray[0].camera.right = viewerArray[i].camera.right;
+            });
+        };
 
         const imageryLayers = viewerArray[0].imageryLayers
         this.setState({
@@ -144,9 +161,9 @@ class Init_comp extends React.Component {
         return (
             <div>
                 <div>
-                    <Time_select_pulldown name="year" val={this.state.year} option={year_list} onChange={this.handleChange} />
-                    <Time_select_pulldown name="monthday" val={this.state.monthday} option={month_list} onChange={this.handleChange} />
-                    <Time_select_pulldown name="hourminute" val={this.state.hourminute} option={hour_list} onChange={this.handleChange} />
+                    <Time_select_pulldown name="year" val={this.state.time_parameter["year"]} option={year_list} onChange={this.handleChange} />
+                    <Time_select_pulldown name="monthday" val={this.state.time_parameter["monthday"]} option={month_list} onChange={this.handleChange} />
+                    <Time_select_pulldown name="hourminute" val={this.state.time_parameter["hourminute"]} option={hour_list} onChange={this.handleChange} />
                 </div>
 
                 <table>
@@ -182,7 +199,7 @@ class Time_select_pulldown extends React.Component {
     }
     render() {
         return (
-            <select id={this.props.name} value={this.props.val} key={this.props.name} onChange={() => this.props.onChange()}>
+            <select id={this.props.name} value={this.props.val} key={this.props.name} onChange={(e) => this.props.onChange(e)}>
                 {this.props.option}
             </select>
         )

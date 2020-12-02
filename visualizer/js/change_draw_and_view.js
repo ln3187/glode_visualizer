@@ -110,7 +110,8 @@ export async function check_datetime_from_input(s3, Dom_param_dic) {
         const pro_array = OptionDic[key_param]
 
         if (!pro_array.includes(wanabe)) {
-            Dom_param_dic[key_param] = pro_array[pro_array.lenght - 1]
+            //console.log("wanabe!",wanabe,pro_array[pro_array.length - 1])
+            Dom_param_dic[key_param] = pro_array[pro_array.length - 1]
         }
     }
 
