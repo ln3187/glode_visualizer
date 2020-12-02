@@ -56,9 +56,9 @@ class Init_comp extends React.Component {
             "hourminute": this.state.hourminute
         }
         param_dic_tmp[type] = val
-        console.log("check-bef",param_dic_tmp)
+        console.log("check-bef", param_dic_tmp)
         const { param_dic, OptionDic } = await check_datetime_from_input(s3, param_dic_tmp)
-        console.log("handle",param_dic,OptionDic)
+        console.log("handle", param_dic, OptionDic)
 
         this.input_year_data = OptionDic["year"]
         this.input_monthday_data = OptionDic["monthday"]
@@ -74,9 +74,6 @@ class Init_comp extends React.Component {
 
 
     componentDidUpdate() {
-        console.log(this.state.hourminute)
-        console.log("Did update !")
-
 
         const Dom_param_dic = {
             year: this.state.year,
@@ -112,19 +109,16 @@ class Init_comp extends React.Component {
 
 
     async componentDidMount() {
-        console.log("didmount")
+
         const { param_dic, OptionDic } = await init_datetime(s3)
 
         this.input_year_data = OptionDic["year"]
         this.input_monthday_data = OptionDic["monthday"]
         this.input_hourminute_data = OptionDic["hourminute"]
 
-        console.log(s3)
-        console.log("param", param_dic, OptionDic)
-
         let viewerArray = []
         viewerIdArray.forEach(viewerId => {
-            console.log(viewerId)
+
             const viewer = new Cesium.Viewer(viewerId, {
                 requestRenderMode: true,
                 maximumRenderTimeChange: 10,
@@ -132,7 +126,8 @@ class Init_comp extends React.Component {
             })
             viewerArray.push(viewer);
         })
-        let imageryLayers = viewerArray[0].imageryLayers
+
+        const imageryLayers = viewerArray[0].imageryLayers
         this.setState({
             year: param_dic["year"],
             monthday: param_dic["monthday"],
@@ -150,6 +145,16 @@ class Init_comp extends React.Component {
         const month_list = create_option(this.input_monthday_data)
         const hour_list = create_option(this.input_hourminute_data)
 
+        let view_name_array = []
+
+        for (let i = 0; i < 2; i++) {
+            for (let j = 0; j < 3; j++) {
+                const view_name = "viewer" + String(i + 1) + String(j + 1)
+                view_name_array.push(view_name)
+            }
+        }
+
+
 
         return (
             <div>
@@ -165,13 +170,13 @@ class Init_comp extends React.Component {
                     </select>
                 </div>
 
-                <div className="v" id="viewer11"></div>
-                <div className="v" id="viewer12"></div>
-                <div className="v" id="viewer13"></div>
-                <br></br>
-                <div className="v" id="viewer21"></div>
-                <div className="v" id="viewer22"></div>
-                <div className="v" id="viewer23"></div>
+                <table>
+                    <tbody>
+                        {view_name_array.map((v, id) => {
+                            return <tr><td><div className="v" id={v}></div></td></tr>
+                        })}
+                    </tbody>
+                </table>
 
                 <div style={{ visibility: "hidden" }} id="controleViewer"></div>
                 <div style={{ visibility: "hidden" }} id="c"></div>
