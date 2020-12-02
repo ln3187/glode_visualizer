@@ -3,7 +3,7 @@ import { constance } from "../js/const.js";
 import { init_datetime } from "../js/init_draw_and_view.js"
 import { check_datetime_from_input } from "../js/change_draw_and_view.js"
 
-const e = React.createElement;
+//const e = React.createElement;
 
 function create_option(input_data) {
     var list = []
@@ -25,11 +25,10 @@ const _propertyArray = _com.aipPropertyArray
 Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI4ODliN2Q1NS1hYTkwLTQxYWQtOTVjMy01NzFlMGRkZThhYmEiLCJpZCI6Mzc1MjUsImlhdCI6MTYwNTE2MjMxNn0.NJ33oqQu8VeX6Yh55y4TiOCtFe5Cxfk6UbddVUorHWo';
 
 
-class LikeButton extends React.Component {
+class Init_comp extends React.Component {
 
     constructor(props) {
         super(props);
-        console.log(this.props.param)
         this.state = {
             year: "",
             monthday: "",
@@ -183,9 +182,8 @@ class LikeButton extends React.Component {
 }
 
 
-const Dom_param_dic = { year: 2020, monthday: 1124, hourminute: 1200 }
 const domContainer = document.getElementById('app');
-const figure = <LikeButton param={Dom_param_dic} key="root" />
+const figure = <Init_comp key="root" />
 ReactDOM.render(figure, domContainer);
 
 
