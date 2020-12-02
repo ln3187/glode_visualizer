@@ -30,15 +30,11 @@ class Init_comp extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            year: "",
-            monthday: "",
-            hourminute: "",
+            time_parameter: {},
+            time_option: {},
             viewerArray: [],
             imageryLayers: ""
         };
-        this.input_year_data = [this.state.year]
-        this.input_monthday_data = [this.state.monthday]
-        this.input_hourminute_data = [this.state.hourminute]
 
         this.custom_render_loop = this.custom_render_loop.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -50,24 +46,13 @@ class Init_comp extends React.Component {
     async handleChange(event) {
         const type = event.target.id
         const val = event.target.value
-        let param_dic_tmp = {
-            "year": this.state.year,
-            "monthday": this.state.monthday,
-            "hourminute": this.state.hourminute
-        }
+        let param_dic_tmp = this.state.time_parameter
         param_dic_tmp[type] = val
-        console.log("check-bef", param_dic_tmp)
         const { param_dic, OptionDic } = await check_datetime_from_input(s3, param_dic_tmp)
-        console.log("handle", param_dic, OptionDic)
-
-        this.input_year_data = OptionDic["year"]
-        this.input_monthday_data = OptionDic["monthday"]
-        this.input_hourminute_data = OptionDic["hourminute"]
 
         this.setState({
-            year: param_dic["year"],
-            monthday: param_dic["monthday"],
-            hourminute: param_dic["hourminute"]
+            time_parameter: param_dic,
+            time_option: OptionDic
         })
 
     }
@@ -75,13 +60,7 @@ class Init_comp extends React.Component {
 
     componentDidUpdate() {
 
-        const Dom_param_dic = {
-            year: this.state.year,
-            monthday: this.state.monthday,
-            hourminute: this.state.hourminute
-        }
-        console.log(Dom_param_dic)
-        setViewer(this.state.imageryLayers, this.state.viewerArray, Dom_param_dic, _propertyArray, 0)
+        setViewer(this.state.imageryLayers, this.state.viewerArray, this.state.time_parameter, _propertyArray, 0)
 
         for (let i = 0; i < viewerIdArray.length; i++) {
             this.state.viewerArray[i].scene.requestRender();
@@ -111,27 +90,33 @@ class Init_comp extends React.Component {
     async componentDidMount() {
 
         const { param_dic, OptionDic } = await init_datetime(s3)
-
-        this.input_year_data = OptionDic["year"]
-        this.input_monthday_data = OptionDic["monthday"]
-        this.input_hourminute_data = OptionDic["hourminute"]
-
         let viewerArray = []
         viewerIdArray.forEach(viewerId => {
 
             const viewer = new Cesium.Viewer(viewerId, {
                 requestRenderMode: true,
                 maximumRenderTimeChange: 10,
-                useDefaultRenderLoop: true
+                useDefaultRenderLoop: true,
+                animation: false,
+                baseLayerPicker: false,
+                fullscreenButton: false,
+                geocoder: false,
+                homeButton: false,
+                infoBox: false,
+                sceneModePicker: false,
+                selectionIndicator: false,
+                timeline: false,
+                navigationHelpButton: false,
+                skyBox: false,
+                skyAtmosphere: false,
             })
             viewerArray.push(viewer);
         })
 
         const imageryLayers = viewerArray[0].imageryLayers
         this.setState({
-            year: param_dic["year"],
-            monthday: param_dic["monthday"],
-            hourminute: param_dic["hourminute"],
+            time_parameter: param_dic,
+            time_option: OptionDic,
             viewerArray: viewerArray,
             imageryLayers: imageryLayers
         });
@@ -141,9 +126,9 @@ class Init_comp extends React.Component {
 
     render() {
 
-        const year_list = create_option(this.input_year_data)
-        const month_list = create_option(this.input_monthday_data)
-        const hour_list = create_option(this.input_hourminute_data)
+        const year_list = create_option(this.state.time_option["year"])
+        const month_list = create_option(this.state.time_option["monthday"])
+        const hour_list = create_option(this.state.time_option["hourminute"])
 
         let view_name_array = []
 
@@ -159,22 +144,26 @@ class Init_comp extends React.Component {
         return (
             <div>
                 <div>
-                    <select id="year" value={this.state.year} onChange={this.handleChange} key="year">
-                        {year_list}
-                    </select>
-                    <select id="monthday" value={this.state.monthday} onChange={this.handleChange} key="monthday">
-                        {month_list}
-                    </select>
-                    <select id="hourminute" value={this.state.hourminute} onChange={this.handleChange} key="hourminute">
-                        {hour_list}
-                    </select>
+                    <Time_select_pulldown name="year" val={this.state.year} option={year_list} onChange={this.handleChange} />
+                    <Time_select_pulldown name="monthday" val={this.state.monthday} option={month_list} onChange={this.handleChange} />
+                    <Time_select_pulldown name="hourminute" val={this.state.hourminute} option={hour_list} onChange={this.handleChange} />
                 </div>
 
                 <table>
                     <tbody>
-                        {view_name_array.map((v, id) => {
-                            return <tr><td><div className="v" id={v}></div></td></tr>
-                        })}
+                        <tr>
+                            {[...Array(3)].map((_, i) => {
+                                return (
+                                    <td><div className="v" id={view_name_array[i]}></div></td>
+                                )
+                            })}
+                        </tr>
+                        <tr>
+                            {[...Array(3)].map((_, i) => {
+                                return <td><div className="v" id={view_name_array[i + 3]}></div></td>
+                            })}
+                        </tr>
+
                     </tbody>
                 </table>
 
@@ -184,6 +173,21 @@ class Init_comp extends React.Component {
             </div>
         );
     }
+}
+
+class Time_select_pulldown extends React.Component {
+    constructor(props) {
+        super(props);
+        console.log(props.name)
+    }
+    render() {
+        return (
+            <select id={this.props.name} value={this.props.val} key={this.props.name} onChange={() => this.props.onChange()}>
+                {this.props.option}
+            </select>
+        )
+    }
+
 }
 
 
