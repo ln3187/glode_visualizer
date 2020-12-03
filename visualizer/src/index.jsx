@@ -50,6 +50,7 @@ class Init_comp extends React.Component {
         param_dic_tmp[type] = val
         const { param_dic, OptionDic } = await check_datetime_from_input(s3, param_dic_tmp)
         console.log("handle",param_dic)
+        console.log("tmp",param_dic_tmp)
 
         this.setState({
             time_parameter: param_dic,
