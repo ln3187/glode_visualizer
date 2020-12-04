@@ -49,7 +49,7 @@ class Init_comp extends React.Component {
         let param_dic_tmp = this.state.time_parameter
         param_dic_tmp[type] = val
         const { param_dic, OptionDic } = await check_datetime_from_input(s3, param_dic_tmp)
-        console.log("handle",param_dic)
+        console.log("handle", param_dic)
 
         this.setState({
             time_parameter: param_dic,
@@ -164,20 +164,33 @@ class Init_comp extends React.Component {
                     <Time_select_pulldown name="year" val={this.state.time_parameter["year"]} option={year_list} onChange={this.handleChange} />
                     <Time_select_pulldown name="monthday" val={this.state.time_parameter["monthday"]} option={month_list} onChange={this.handleChange} />
                     <Time_select_pulldown name="hourminute" val={this.state.time_parameter["hourminute"]} option={hour_list} onChange={this.handleChange} />
+                    
+
+                
                 </div>
+                <br></br>
 
                 <table>
                     <tbody>
                         <tr>
                             {[...Array(3)].map((_, i) => {
                                 return (
-                                    <td><div className="v" id={view_name_array[i]}></div></td>
+                                    <td>
+                                        <Range_select />
+                                        <div className="v" id={view_name_array[i]}></div>
+                                    </td>
+
                                 )
                             })}
                         </tr>
                         <tr>
                             {[...Array(3)].map((_, i) => {
-                                return <td><div className="v" id={view_name_array[i + 3]}></div></td>
+                                return (
+                                    <td>
+                                        <Range_select /><br />
+                                        <div className="v" id={view_name_array[i+3]}></div>
+                                    </td>
+                                )
                             })}
                         </tr>
 
@@ -205,6 +218,22 @@ class Time_select_pulldown extends React.Component {
         )
     }
 
+}
+
+class Range_select extends React.Component {
+    constructor(props) {
+        super(props);
+        console.log(props.name)
+    }
+
+    render() {
+        return (
+            <form>
+                <input type="text" id="lname" />
+                <input type="text" id="lname" />
+            </form>
+        )
+    }
 }
 
 
