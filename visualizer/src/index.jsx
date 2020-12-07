@@ -50,8 +50,8 @@ class Init_comp extends React.Component {
         param_dic_tmp[type] = val
         const { param_dic, OptionDic } = await check_datetime_from_input(s3, param_dic_tmp)
 
-        console.log("handle",param_dic)
-        console.log("tmp",param_dic_tmp)
+        console.log("handle", param_dic)
+        console.log("tmp", param_dic_tmp)
 
         this.setState({
             time_parameter: param_dic,
@@ -166,9 +166,9 @@ class Init_comp extends React.Component {
                     <Time_select_pulldown name="year" val={this.state.time_parameter["year"]} option={year_list} onChange={this.handleChange} />
                     <Time_select_pulldown name="monthday" val={this.state.time_parameter["monthday"]} option={month_list} onChange={this.handleChange} />
                     <Time_select_pulldown name="hourminute" val={this.state.time_parameter["hourminute"]} option={hour_list} onChange={this.handleChange} />
-                    
 
-                
+
+
                 </div>
                 <br></br>
 
@@ -178,7 +178,7 @@ class Init_comp extends React.Component {
                             {[...Array(3)].map((_, i) => {
                                 return (
                                     <td>
-                                        <Range_select />
+                                        <Range_select name={i} />
                                         <div className="v" id={view_name_array[i]}></div>
                                     </td>
 
@@ -189,8 +189,8 @@ class Init_comp extends React.Component {
                             {[...Array(3)].map((_, i) => {
                                 return (
                                     <td>
-                                        <Range_select /><br />
-                                        <div className="v" id={view_name_array[i+3]}></div>
+                                        <Range_select name={i + 3} /><br />
+                                        <div className="v" id={view_name_array[i + 3]}></div>
                                     </td>
                                 )
                             })}
@@ -229,10 +229,12 @@ class Range_select extends React.Component {
     }
 
     render() {
+        const max_name = "max_" + this.props.name
+        const min_name = "min_" + this.props.name
         return (
             <form>
-                <input type="text" id="lname" />
-                <input type="text" id="lname" />
+                <input type="text" id={max_name} />
+                <input type="text" id={min_name} />
             </form>
         )
     }
