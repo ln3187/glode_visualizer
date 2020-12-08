@@ -2,8 +2,7 @@ import { setViewer } from "../js/setviewer.js";
 import { constance } from "../js/const.js";
 import { init_datetime } from "../js/init_draw_and_view.js"
 import { check_datetime_from_input } from "../js/change_draw_and_view.js"
-
-//const e = React.createElement;
+import {Time_select_pulldown,Range_select} from "./child.js"
 
 function create_option(input_data) {
     var list = []
@@ -178,7 +177,7 @@ class Init_comp extends React.Component {
                             {[...Array(3)].map((_, i) => {
                                 return (
                                     <td>
-                                        <Range_select name={i} />
+                                        <Range_select name={i} val = {_com.aipMinValueArray[i]}/>
                                         <div className="v" id={view_name_array[i]}></div>
                                     </td>
 
@@ -189,7 +188,7 @@ class Init_comp extends React.Component {
                             {[...Array(3)].map((_, i) => {
                                 return (
                                     <td>
-                                        <Range_select name={i + 3} /><br />
+                                        <Range_select name={i + 3} val = {_com.aipMinValueArray[i]}/><br />
                                         <div className="v" id={view_name_array[i + 3]}></div>
                                     </td>
                                 )
@@ -207,43 +206,7 @@ class Init_comp extends React.Component {
     }
 }
 
-class Time_select_pulldown extends React.Component {
-    constructor(props) {
-        super(props);
-        console.log(props.name)
-    }
-    render() {
-        return (
-            <select id={this.props.name} value={this.props.val} key={this.props.name} onChange={(e) => this.props.onChange(e)}>
-                {this.props.option}
-            </select>
-        )
-    }
-
-}
-
-class Range_select extends React.Component {
-    constructor(props) {
-        super(props);
-        console.log(props.name)
-    }
-
-    render() {
-        const max_name = "max_" + this.props.name
-        const min_name = "min_" + this.props.name
-        return (
-            <form>
-                <input type="text" id={max_name} />
-                <input type="text" id={min_name} />
-            </form>
-        )
-    }
-}
-
 
 const domContainer = document.getElementById('app');
 const figure = <Init_comp key="root" />
 ReactDOM.render(figure, domContainer);
-
-
-
